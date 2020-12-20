@@ -1,6 +1,7 @@
 {
   "name": "@emilmassey/teampass",
   "version": "0.1.0",
+  "description": "Simple tool to get credentials from TeamPass.",
   "main": "index.js",
   "license": "MIT",
   "bin": {
