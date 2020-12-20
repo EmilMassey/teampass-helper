@@ -8,6 +8,7 @@
     "teampass": "./index.js"
   },
   "dependencies": {
+    "cacache": "^15.0.5",
     "chalk": "^4.1.0",
     "node-notifier": "^9.0.0",
     "puppeteer": "^5.5.0"

@@ -3,8 +3,41 @@
 const puppeteer = require('puppeteer');
 const chalk = require('chalk');
 const notifier = require('node-notifier');
+const cacache = require('cacache')
 
-// TODO: try to skip login if cookie set and session still active
+const CACHE_PATH = '/tmp/node-teampass-helper-cache'
+const CACHE_KEY_COOKIES = 'cookies'
+
+/**
+ * @param {Page} page
+ *
+ * @return void
+ */
+async function login(page) {
+  try {
+    const { data: cachedCookiesBuffer } = await cacache.get(CACHE_PATH, CACHE_KEY_COOKIES)
+
+    await page.setCookie(...JSON.parse(cachedCookiesBuffer.toString()))
+  } catch (e) {
+    // there are no cached cookies
+  }
+
+  await page.goto('http://192.168.1.99/teampass/index.php?page=items')
+
+  if (await page.$('#login')) {
+    await page.type('#login', process.env.TEAMPASS_USER)
+    await page.type('#pw', process.env.TEAMPASS_PASSWORD)
+    await page.click('#but_identify_user')
+    await page.waitForNavigation()
+  }
+
+  const cookies = Array.from(await page.cookies()).map(cookie => {
+    cookie.expires = 999999999999
+    return cookie
+  })
+
+  cacache.put(CACHE_PATH, CACHE_KEY_COOKIES, Buffer.from(JSON.stringify(cookies)))
+}
 
 (async () => {
   if (process.argv.length < 3) {
@@ -21,12 +54,8 @@ const notifier = require('node-notifier');
 
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
-  await page.goto('http://192.168.1.99/teampass/index.php')
 
-  await page.type('#login', process.env.TEAMPASS_USER)
-  await page.type('#pw', process.env.TEAMPASS_PASSWORD)
-  await page.click('#but_identify_user')
-  await page.waitForNavigation()
+  await login(page)
 
   await page.waitForSelector('#search_item')
   await page.type('#search_item', queryString)
