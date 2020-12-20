@@ -27,7 +27,4 @@ At the moment, password is copied to the clipboard and is
 never displayed.
 
 ### Why is it so slow?
-Currently everytime you run the tool, login action is being
-performed and it is slow due to TeamPass' implementation of
-authentication process. In the future, the tool will try to
-restore previous session in order to skip the login process.
+It's because TeamPass is so slow.
