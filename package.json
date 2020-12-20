@@ -1,0 +1,14 @@
+{
+  "name": "@emilmassey/teampass",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "bin": {
+    "teampass": "./index.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "node-notifier": "^9.0.0",
+    "puppeteer": "^5.5.0"
+  }
+}
